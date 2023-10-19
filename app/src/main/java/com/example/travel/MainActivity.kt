@@ -1,40 +1,32 @@
 package com.example.travel
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.travel.databinding.ActivityMainBinding
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
-
+    val language = arrayOf("0","1")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        val arrayAdapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,language)
 
-        setSupportActionBar(binding.toolbar)
+        val listView = findViewById<ListView>(R.id.listView)
+        listView.adapter = arrayAdapter
+        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+            val selectedItem = adapterView.getItemAtPosition(position) as String
+            val itemIdAtPos = adapterView.getItemIdAtPosition(position)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            Toast.makeText(
+                applicationContext,
+                "click item $selectedItem its position $itemIdAtPos",
+                Toast.LENGTH_SHORT
+            ).show()
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
+        }
 }
