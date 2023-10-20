@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/header_tw"
+        android:title="zh-tw" />
+    <item
+        android:id="@+id/header_cn"
+        android:title="zh-cn" />
+    <item
+        android:id="@+id/header_en"
+        android:title="en" />
+    <item
+        android:id="@+id/header_jp"
+        android:title="jp" />
+    <item
+        android:id="@+id/header_kr"
+        android:title="kr" />
+    <item
+        android:id="@+id/header_es"
+        android:title="es" />
+<!--    travel taipei response "Invalid Parameter: lang" -->
+    <item
+        android:id="@+id/header_id"
+        android:title="id"
+        android:visible="false"/>
+<!--    -->
+    <item
+        android:id="@+id/header_th"
+        android:title="th" />
+    <item
+        android:id="@+id/header_vi"
+        android:title="vi" />
+</menu>

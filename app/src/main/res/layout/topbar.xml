@@ -19,20 +19,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="Text" />
+                android:text="TaipeiTour"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
                 android:layout_centerVertical="true"
                 android:id="@+id/trans_button"
-                android:text="Tran" />
+                android:background="@drawable/translation_free_social_icons"/>
 
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>

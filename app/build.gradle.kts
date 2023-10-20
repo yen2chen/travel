@@ -72,4 +72,5 @@ dependencies {
     //noinspection GradleCompatible
     implementation("com.android.support:appcompat-v7:28.0.0")
     implementation ("com.squareup.okhttp3:okhttp:3.10.0")
+    implementation("io.coil-kt:coil:2.3.0")
 }

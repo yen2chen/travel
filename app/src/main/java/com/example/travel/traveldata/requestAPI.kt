@@ -14,8 +14,9 @@ import org.json.JSONObject
 class requestAPI {
     companion object {
         var travelInfo = JSONObject()
-        fun addJson(jarray: JSONObject){
-            travelInfo = jarray
+        var update = false
+        fun addJson(jObj: JSONObject){
+            travelInfo = jObj
         }
 
         fun run(url: String) {
@@ -28,11 +29,10 @@ class requestAPI {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {}
                 override fun onResponse(call: Call, response: Response) {
-//                    println(response.body()?.string())
-                    val jsonTotal = JSONObject(response.body()?.string())
+                    val jsonTotal = JSONObject(response.body?.string())
                     addJson(jsonTotal)
                     println( jsonTotal.toString())
-                    ItemFragment().updateAdapter()
+                    update = true
                 }
             })
         }
