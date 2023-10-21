@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         button = findViewById<ImageButton>(R.id.trans_button)
         button.setOnClickListener(View.OnClickListener { view ->
-            Log.d(TAG, "click trans button")
+            Log.d(TAG, "click translation button")
             val popupMenu: PopupMenu = PopupMenu(this,button)
             popupMenu.menuInflater.inflate(R.menu.translation_menu,popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateAdapter(){
-        println("updateAdapter")
         val fragment = ItemFragment()
         fragment.listener = { position -> run { goAttraction(position) } }
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, fragment).commitNow()
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     fun checkTravelData(){
         if(requestAPI.update){
-            println("YCC " + supportFragmentManager.fragments.first().toString())
+            Log.d(TAG, supportFragmentManager.fragments.first().toString())
             when(supportFragmentManager.fragments.first()) {
                 is ItemFragment -> updateAdapter()
                 is SelectedFragment -> goAttraction(lastAttraction)
@@ -79,11 +78,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goAttraction(number: Int){
-        println("YCC2 " + number)
         lastAttraction = number
         val selectedFragment = SelectedFragment(number)
         selectedFragment.listener = {_ ->
-            println("YCC click link")
             button.visibility = View.GONE
         }
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, selectedFragment).commitNow()
@@ -92,9 +89,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        println("YCC back button")
+        Log.d(TAG, "back button")
         if(supportFragmentManager.fragments.first() is SelectedFragment && (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility == View.VISIBLE){
-            println("YCC is visible")
+            Log.d(TAG, "web view is visible")
             (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility = View.GONE
             button.visibility = View.VISIBLE
         }else {

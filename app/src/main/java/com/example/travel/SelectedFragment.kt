@@ -2,6 +2,7 @@ package com.example.travel
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -18,6 +19,7 @@ import com.example.travel.traveldata.requestAPI
 import org.w3c.dom.Text
 
 class SelectedFragment(val attraction:Int): Fragment() {
+    private val TAG = "SelectedFragment"
     lateinit var webView: WebView
     var listener: ((visible: Int) -> Unit)? = null
     @SuppressLint("MissingInflatedId")
@@ -30,7 +32,7 @@ class SelectedFragment(val attraction:Int): Fragment() {
         val horizonView = view.findViewById<LinearLayout>(R.id.image_view_set)
         val request = requestAPI.travelInfo
         val imageArray = request.getJSONArray("data").getJSONObject(attraction).getJSONArray("images")
-        println("YCC "+ request.getJSONArray("data").getJSONObject(attraction).getJSONArray("images").length())
+        Log.d(TAG, request.getJSONArray("data").getJSONObject(attraction).getJSONArray("images").length().toString())
         for(i in 0 until  imageArray.length()){
             val image = ImageView(context)
             image.load(imageArray.getJSONObject(i).get("src"))
