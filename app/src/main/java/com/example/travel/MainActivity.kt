@@ -2,15 +2,12 @@ package com.example.travel
 
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import com.example.travel.traveldata.requestAPI
 
 class MainActivity : AppCompatActivity() {
@@ -19,24 +16,21 @@ class MainActivity : AppCompatActivity() {
     private val language = arrayOf("zh-tw", "zh-cn", "en", "ja", "ko", "es", "id", "th", "vi")
     private val apiRoot = "https://www.travel.taipei/open-api/"
     private val apiEnd = "/Attractions/All"
-
-    private val fragmentManager = supportFragmentManager
+    private var lastLanguage = 0
+    private var lastAttraction = -1
+    private lateinit var button: View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.hide()
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.frameLayout, ItemFragment())
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        val button = findViewById<ImageButton>(R.id.trans_button)
+        initFragment()
+
+        button = findViewById<ImageButton>(R.id.trans_button)
         button.setOnClickListener(View.OnClickListener { view ->
-//            requestAPI.run(apiRoot+language[1]+apiEnd)
             Log.d(TAG, "click trans button")
-//            updateAPI(1)
-//            updateAdapter()
             val popupMenu: PopupMenu = PopupMenu(this,button)
             popupMenu.menuInflater.inflate(R.menu.translation_menu,popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
@@ -55,25 +49,65 @@ class MainActivity : AppCompatActivity() {
             })
             popupMenu.show()
         })
-        updateAPI(0)
+        updateAPI(lastLanguage)
 
         checkTravelData()
     }
 
-
     fun updateAdapter(){
         println("updateAdapter")
-        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, ItemFragment()).commitNow()
+        val fragment = ItemFragment()
+        fragment.listener = { position -> run { goAttraction(position) } }
+        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, fragment).commitNow()
     }
     fun updateAPI(selectedLanguage: Int){
         requestAPI.run(apiRoot+language[selectedLanguage]+apiEnd)
+        lastLanguage = selectedLanguage
     }
 
     fun checkTravelData(){
         if(requestAPI.update){
-            updateAdapter()
+            println("YCC " + supportFragmentManager.fragments.first().toString())
+            when(supportFragmentManager.fragments.first()) {
+                is ItemFragment -> updateAdapter()
+                is SelectedFragment -> goAttraction(lastAttraction)
+            }
+
             requestAPI.update = false
         }
         Handler().postDelayed(Runnable { checkTravelData() }, 1000)
+    }
+
+    fun goAttraction(number: Int){
+        println("YCC2 " + number)
+        lastAttraction = number
+        val selectedFragment = SelectedFragment(number)
+        selectedFragment.listener = {_ ->
+            println("YCC click link")
+            button.visibility = View.GONE
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, selectedFragment).commitNow()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        println("YCC back button")
+        if(supportFragmentManager.fragments.first() is SelectedFragment && (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility == View.VISIBLE){
+            println("YCC is visible")
+            (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility = View.GONE
+            button.visibility = View.VISIBLE
+        }else {
+            updateAdapter()
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            supportActionBar?.setDisplayShowHomeEnabled(false)
+        }
+        return true
+    }
+
+    fun initFragment(){
+        val fragment = ItemFragment()
+        fragment.listener = { position -> run { goAttraction(position) } }
+        supportFragmentManager.beginTransaction().add(R.id.frameLayout, fragment).addToBackStack(null).commit()
     }
 }

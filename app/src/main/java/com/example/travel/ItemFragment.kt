@@ -13,6 +13,7 @@ import org.json.JSONException
 class ItemFragment : Fragment() {
     private lateinit var view:View
     private lateinit var testAdapter:ListAdapter
+    var listener: ((selectedPosition: Int) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +50,11 @@ class ItemFragment : Fragment() {
         val layoutManager = LinearLayoutManager(this.context)
 
         testAdapter = ListAdapter(requireContext(), dataArray)
+        testAdapter.onItemClick = { contacts ->
+            println("YCC" + contacts.toString())
+            listener?.invoke(contacts)
+
+        }
         (view as RecyclerView).layoutManager = layoutManager
         (view as RecyclerView).adapter = testAdapter
         println(dataArray)

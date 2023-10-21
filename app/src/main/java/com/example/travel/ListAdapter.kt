@@ -3,6 +3,7 @@ package com.example.travel
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.ContactsContract.Contacts
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import coil.load
 
 class ListAdapter(val context: Context, val nameArray: ArrayList<ArrayList<String>>): RecyclerView.Adapter<ListAdapter.ViewHolder>(){
 
+    var onItemClick: ((Int) -> Unit)?  = null
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val nameText = itemView?.findViewById<TextView>(R.id.travel_title)
         val descriptionText = itemView?.findViewById<TextView>(R.id.travel_description)
@@ -25,6 +27,12 @@ class ListAdapter(val context: Context, val nameArray: ArrayList<ArrayList<Strin
             fig?.load(data[2])
             if(data[2].equals("Not provide")){
                 fig?.setBackgroundResource(R.drawable.ic_launcher_foreground)
+            }
+        }
+
+        init {
+            itemView.setOnClickListener{
+                onItemClick?.invoke(adapterPosition)
             }
         }
     }
