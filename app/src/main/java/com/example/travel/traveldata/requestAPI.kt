@@ -1,18 +1,17 @@
 package com.example.travel.traveldata
 
-import com.example.travel.ItemFragment
-import com.example.travel.MainActivity
+import android.util.Log
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.json.JSONArray
 import java.io.IOException
 import org.json.JSONObject
 
 class requestAPI {
     companion object {
+        private val TAG = "requestAPI"
         var travelInfo = JSONObject()
         var update = false
         fun addJson(jObj: JSONObject){
@@ -31,7 +30,7 @@ class requestAPI {
                 override fun onResponse(call: Call, response: Response) {
                     val jsonTotal = JSONObject(response.body?.string())
                     addJson(jsonTotal)
-                    println( jsonTotal.toString())
+                    Log.d(TAG,  jsonTotal.toString())
                     update = true
                 }
             })

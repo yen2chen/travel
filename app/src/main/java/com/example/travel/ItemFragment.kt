@@ -1,6 +1,7 @@
 package com.example.travel
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,10 @@ import com.example.travel.traveldata.requestAPI
 import org.json.JSONException
 
 class ItemFragment : Fragment() {
+    private val TAG = "ItemFragment"
     private lateinit var view:View
     private lateinit var testAdapter:ListAdapter
+    var listener: ((selectedPosition: Int) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +32,7 @@ class ItemFragment : Fragment() {
         }
         val request = requestAPI.travelInfo
 //        println(request.getJSONArray("data").getJSONObject(0).get("name").toString())
-        println("YCC "+ request.getJSONArray("data").getJSONObject(0).getJSONArray("images"))
+        Log.d(TAG, request.getJSONArray("data").getJSONObject(0).getJSONArray("images").toString())
         val dataArray = ArrayList<ArrayList<String>>()
         for (i in 0..request.length()) {
             val tourArray = ArrayList<String>()
@@ -38,7 +41,7 @@ class ItemFragment : Fragment() {
                 tourArray.add(request.getJSONArray("data").getJSONObject(i).get("introduction").toString())
                 tourArray.add(request.getJSONArray("data").getJSONObject(i).getJSONArray("images").getJSONObject(0).get("src").toString())
             }catch (e: JSONException){
-                println(e)
+                Log.e(TAG, e.printStackTrace().toString())
                 while(tourArray.size < 3){
                     tourArray.add("Not provide")
                 }
@@ -49,9 +52,13 @@ class ItemFragment : Fragment() {
         val layoutManager = LinearLayoutManager(this.context)
 
         testAdapter = ListAdapter(requireContext(), dataArray)
+        testAdapter.onItemClick = { contacts ->
+            Log.d(TAG, contacts.toString())
+            listener?.invoke(contacts)
+        }
         (view as RecyclerView).layoutManager = layoutManager
         (view as RecyclerView).adapter = testAdapter
-        println(dataArray)
+        Log.d(TAG, "Get data $dataArray")
 
         return view
     }
