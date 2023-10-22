@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         val fragment = ItemFragment()
         fragment.listener = { position -> run { goAttraction(position) } }
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, fragment).commitNow()
+        findViewById<TextView>(R.id.bar_title).setText("TaipeiTour")
     }
     fun updateAPI(selectedLanguage: Int){
         requestAPI.run(apiRoot+language[selectedLanguage]+apiEnd)
@@ -86,6 +88,8 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, selectedFragment).commitNow()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        button.visibility = View.GONE
+        findViewById<TextView>(R.id.bar_title).setText(requestAPI.travelInfo.getJSONArray("data").getJSONObject(number).get("name").toString())
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -93,11 +97,12 @@ class MainActivity : AppCompatActivity() {
         if(supportFragmentManager.fragments.first() is SelectedFragment && (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility == View.VISIBLE){
             Log.d(TAG, "web view is visible")
             (supportFragmentManager.fragments.first() as SelectedFragment).webView.visibility = View.GONE
-            button.visibility = View.VISIBLE
+//            button.visibility = View.VISIBLE
         }else {
             updateAdapter()
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
             supportActionBar?.setDisplayShowHomeEnabled(false)
+            button.visibility = View.VISIBLE
         }
         return true
     }
