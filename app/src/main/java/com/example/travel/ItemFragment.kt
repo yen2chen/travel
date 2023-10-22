@@ -34,7 +34,7 @@ class ItemFragment : Fragment() {
 //        println(request.getJSONArray("data").getJSONObject(0).get("name").toString())
         Log.d(TAG, request.getJSONArray("data").getJSONObject(0).getJSONArray("images").toString())
         val dataArray = ArrayList<ArrayList<String>>()
-        for (i in 0..request.length()) {
+        for (i in 0 until request.getJSONArray("data").length()) {
             val tourArray = ArrayList<String>()
             try {
                 tourArray.add(request.getJSONArray("data").getJSONObject(i).get("name").toString())
